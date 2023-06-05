@@ -1,0 +1,9 @@
+GCP:
+  auth_key_path: GCP AUTH JSON PATH
+  language_code: LANGUAGE_CODE
+STT:
+  rate: STT MIC RATE
+  chunk: STT MIC CHUNK
+openAI:
+  API_KEY: OPENAI API KEY
+  model: OPENAI AI MODEL
