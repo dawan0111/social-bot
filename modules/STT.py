@@ -30,7 +30,6 @@ class MicrophoneStream(object):
         return self
 
     def __exit__(self, type, value, traceback):
-        print("exit??")
         print(type, value, traceback)
         self._audio_stream.stop_stream()
         self._audio_stream.close()
@@ -76,6 +75,7 @@ class STT:
         self.config = speech.RecognitionConfig(encoding=speech.RecognitionConfig.AudioEncoding.LINEAR16,
                                           sample_rate_hertz=rate,
                                           language_code=language_code,
+                                          alternative_language_codes=["en-US"],
                                           speech_contexts=[{"phrases":phrases}]
         )
 
@@ -118,6 +118,7 @@ class STT:
                 response = []
                 while not self.text_buffer.empty():
                     response.append(self.text_buffer.get())
+                response.append((transcript + overwrite_chars, time.time()))
                 self.listen_callback(response)
                 print("finish]", transcript + overwrite_chars)
                 num_chars_printed = 0

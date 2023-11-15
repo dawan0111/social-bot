@@ -1,22 +1,19 @@
 import openai
 
 class OpenAI:
-    def __init__(self, api_key: str, model: str, initial_messages = []):
+    def __init__(self, api_key: str, model: str):
         self.api_key = api_key
         self.model = model
-        self.messages = initial_messages
 
         openai.api_key = self.api_key
     
-    def run(self, message: str) -> str:
-        self.messages.append({"role": "user", "content": f"{message}"})
-
+    def run(self, chats) -> str:
+        print(chats)
         response = openai.ChatCompletion.create(
             model=self.model,
-            messages=self.messages
+            messages=chats
         )
         answer = response['choices'][0]['message']['content'].strip()
-        self.messages.append({"role": "assistant", "content": f"{answer}"})
 
         return answer
     
