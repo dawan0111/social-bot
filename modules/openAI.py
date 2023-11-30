@@ -9,12 +9,13 @@ class OpenAI:
     
     def run(self, chats) -> str:
         print(chats)
-        response = openai.ChatCompletion.create(
-            model=self.model,
-            messages=chats
-        )
-        answer = response['choices'][0]['message']['content'].strip()
-
+        answer = "openai error"
+        try:
+	        response = openai.ChatCompletion.create(model=self.model, messages=chats)
+	        answer = response['choices'][0]['message']['content'].strip()
+        except Exception as e:
+            pass
+		
         return answer
     
 if __name__ == "__main__":

@@ -12,10 +12,11 @@ from modules.API import API, PostChatEntity
 from modules.TTS import TTS
 from modules.STT import STT
 from modules.openAI import OpenAI
+from modules.led import Neo
 
 def parse_args():
     parser = argparse.ArgumentParser(description="EMOTIBOT Parameter description")
-    parser.add_argument("--config", type=str, default=os.environ.get("GCP_KEY_PATH", "./config.yaml"), help="emoti config yaml file path")
+    parser.add_argument("--config", type=str, default=os.environ.get("GCP_KEY_PATH", "/home/airo/social-bot/config.yaml"), help="emoti config yaml file path")
 
     args = parser.parse_args()
     return args
@@ -56,7 +57,7 @@ class OutputProcesser:
         final_text, final_time = responses[-1]
 
         entity = PostChatEntity(robot_id=1, mode=self.modeManager.get_mode_id(), message=final_text)
-        response = self.APIModule.post_chat_message(entity)
+        # response = self.APIModule.post_chat_message(entity)
         
         _, input_text, is_direct, chats, direct_message = self.run_middlewares(final_text)
         self.input_queue.put((is_direct, chats, direct_message))
@@ -108,6 +109,7 @@ class OutputProcesser:
                     self.tts.run(direct_message)
                     self.latest_answer = time.time()
                 else:
+                    self.tts.run("gpt waiting")
                     response_text = self.openAI.run(chats)
                     self.modeManager.add_chat(response_text, 'assistant')
                     self.tts.run(response_text)
@@ -118,6 +120,16 @@ class OutputProcesser:
             else:
                 pass
             time.sleep(self.delay_s)
+
+class LEDProcesser:
+    def __init__(self, neo):
+        self.neo = neo
+
+    def run(self):
+        while True:
+            self.neo.listenMode()
+            print("led test")
+            time.sleep(0.1)
 
 
 if __name__ == "__main__":
@@ -144,9 +156,11 @@ if __name__ == "__main__":
     tts = TTS(GCP_AUTH_PATH, GCP_LANG_CODE)
     openAI = OpenAI(OPENAI['API_KEY'], OPENAI['model'])
     API_module = API(api_endpoint="http://127.0.0.1:8000")
+    neo = Neo()
 
     modeMiddleware = ModeMiddleware(modeManager)
 
+    led_processer = LEDProcesser(neo)
     output_processer = OutputProcesser(tts=tts, openAI=openAI, modeManager=modeManager, APIModule=API_module)
 
     stt = STT(GCP_AUTH_PATH, GCP_LANG_CODE, _cfg["STT"]["rate"], _cfg["STT"]["chunk"], output_processer.speak_callback)
@@ -158,6 +172,9 @@ if __name__ == "__main__":
 
     input_thread = threading.Thread(target=input_processer.run)
     output_thread = threading.Thread(target=output_processer.run)
+    led_thread = threading.Thread(target=led_processer.run)
+
+    tts.run("program start")
 
     threads = [input_thread, output_thread]
     for thread in threads:
