@@ -14,7 +14,7 @@ class ModeMiddleware(AbstractMiddleware):
         self.modeManager = modeManager
 
     def run(self, response):
-        _, input_text, is_direct, chats, direct_message = response
+        _, input_text, is_direct, chats, direct_message, motion = response
         command_type, mode = self.classify_command_type(input_text)
 
         if command_type == Command.MODE_CHANGE:
@@ -25,10 +25,10 @@ class ModeMiddleware(AbstractMiddleware):
             if mode == Mode.DEFAULT:
                 direct_message = exit_message
 
-            return (False, input_text, True, self.modeManager.get_chats(), direct_message)
+            return (False, input_text, True, self.modeManager.get_chats(), direct_message, motion)
             
         self.modeManager.add_chat(input_text, 'user')
-        return (False, input_text, False, self.modeManager.get_chats(), direct_message)
+        return (False, input_text, False, self.modeManager.get_chats(), direct_message, motion)
     
     def classify_command_type(self, input_text):
         if '영어' in input_text:
@@ -37,5 +37,7 @@ class ModeMiddleware(AbstractMiddleware):
             return (Command.MODE_CHANGE, Mode.DEFAULT)
         elif '다이어리' in input_text:
             return (Command.MODE_CHANGE, Mode.DIARY)
+        elif '코딩' in input_text:
+            return (Command.MODE_CHANGE, Mode.CODING)
         else:
             return (Command.COMMUNITY, self.modeManager.get_mode_id())

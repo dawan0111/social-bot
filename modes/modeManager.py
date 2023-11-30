@@ -1,4 +1,5 @@
 from enum import Enum
+from modes.codingMode import CodingMode
 
 from modes.defaultMode import DefaultMode
 from modes.diaryMode import DiaryMode
@@ -22,9 +23,9 @@ class ModeManager():
       self.modes[Mode.DIARY] = DiaryMode()
       self.modes[Mode.COUNSEL] = None
       self.modes[Mode.MORNING] = None
-      self.modes[Mode.CODING] = None
+      self.modes[Mode.CODING] = CodingMode()
 
-      self.current_mode = Mode.DEFAULT
+      self.current_mode = Mode.CODING
       self.current_mode_modules = self.modes[self.current_mode]
 
     def change_mode(self, mode):

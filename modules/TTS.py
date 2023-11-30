@@ -1,6 +1,5 @@
 from playsound import playsound
 from google.cloud import texttospeech
-from preferredsoundplayer import *
 import pygame
 import os
 
