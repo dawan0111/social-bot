@@ -9,9 +9,9 @@ class CodingMiddleware(AbstractMiddleware):
         super().__init__()
         self.modeManager = modeManager
         self.settings = [
-            dict(id="첫번째", left_command="사과", right_command="배", up_command="포도", down_command="바나나"),
-            dict(id="두번째", left_command="사과", right_command="배", up_command="포도", down_command="바나나"),
-            dict(id="세번째", left_command="사과", right_command="배", up_command="포도", down_command="바나나"),
+            dict(id="과일", left_command="딸기", right_command="사과", up_command="포도", down_command="자두", right_eye_command="수박", left_eye_command="레몬"),
+            dict(id="동물", left_command="여우", right_command="사자", up_command="토끼", down_command="상어", right_eye_command="하마", left_eye_command="고래"),
+            dict(id="음식", left_command="김밥", right_command="만두", up_command="피자", down_command="치킨", right_eye_command="초밥", left_eye_command="라면"),
         ]
         self.setting = self.settings[0]
         
@@ -59,6 +59,12 @@ class CodingMiddleware(AbstractMiddleware):
                 matched_motion = True
             elif self.setting["down_command"] in command:
                 motion.append("D")
+                matched_motion = True
+            elif self.setting["right_eye_command"] in command:
+                motion.append("R_E")
+                matched_motion = True
+            elif self.setting["left_eye_command"] in command:
+                motion.append("L_E")
                 matched_motion = True
               
             if matched_motion:
