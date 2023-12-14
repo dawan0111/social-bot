@@ -48,16 +48,16 @@ class CodingMiddleware(AbstractMiddleware):
             command = text[start_index:start_index + string_length].strip()
             matched_motion = False
 
-            if self.setting.left_command in command:
+            if self.setting["left_command"] in command:
                 motion.append("L")
                 matched_motion = True
-            elif self.setting.right_command in command:
+            elif self.setting["right_command"] in command:
                 motion.append("R")
                 matched_motion = True
-            elif self.setting.up_command in command:
+            elif self.setting["up_command"] in command:
                 motion.append("U")
                 matched_motion = True
-            elif self.setting.down_command in command:
+            elif self.setting["down_command"] in command:
                 motion.append("D")
                 matched_motion = True
               
