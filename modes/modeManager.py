@@ -25,7 +25,7 @@ class ModeManager():
       self.modes[Mode.MORNING] = None
       self.modes[Mode.CODING] = CodingMode()
 
-      self.current_mode = Mode.CODING
+      self.current_mode = Mode.DEFAULT
       self.current_mode_modules = self.modes[self.current_mode]
 
     def change_mode(self, mode):

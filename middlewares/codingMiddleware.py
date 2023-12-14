@@ -8,11 +8,13 @@ class CodingMiddleware(AbstractMiddleware):
     def __init__(self, modeManager: ModeManager) -> None:
         super().__init__()
         self.modeManager = modeManager
-
-        self.left_command = "사과"
-        self.right_command = "배"
-        self.up_command = "포도"
-        self.down_command = "바나나"
+        self.settings = [
+            dict(id="첫번째", left_command="사과", right_command="배", up_command="포도", down_command="바나나"),
+            dict(id="두번째", left_command="사과", right_command="배", up_command="포도", down_command="바나나"),
+            dict(id="세번째", left_command="사과", right_command="배", up_command="포도", down_command="바나나"),
+        ]
+        self.setting = self.settings[0]
+        
 
     def run(self, response):
         _, input_text, is_direct, chats, direct_message, motion = response
@@ -20,10 +22,22 @@ class CodingMiddleware(AbstractMiddleware):
         mode = self.modeManager.get_mode_id()
         
         if mode == Mode.CODING:
+            setting = self.get_setting(input_text)
+            if setting is not None:
+                self.setting = setting
+                return (False, input_text, True, [], "{} 문제로 변경했어요.".format(self.setting["id"]), [])
+
             coding_moton = self.create_motion(input_text)
             return (False, input_text, True, [], "motion start", coding_moton)
         else:
           return response
+        
+    def get_setting(self, text):
+        command = text.replace(" ", "")
+        for setting in self.settings:
+            if setting["id"] in command:
+                return setting
+        return None
         
     def create_motion(self, text):
         motion = []
@@ -33,17 +47,17 @@ class CodingMiddleware(AbstractMiddleware):
         while start_index + string_length <= len(text):
             command = text[start_index:start_index + string_length].strip()
             matched_motion = False
-            print(command)
-            if self.left_command in command:
+
+            if self.setting.left_command in command:
                 motion.append("L")
                 matched_motion = True
-            elif self.right_command in command:
+            elif self.setting.right_command in command:
                 motion.append("R")
                 matched_motion = True
-            elif self.up_command in command:
+            elif self.setting.up_command in command:
                 motion.append("U")
                 matched_motion = True
-            elif self.down_command in command:
+            elif self.setting.down_command in command:
                 motion.append("D")
                 matched_motion = True
               
@@ -53,5 +67,4 @@ class CodingMiddleware(AbstractMiddleware):
             else:
               string_length += 1
 
-        print("motion: ", motion)
         return motion
