@@ -8,7 +8,7 @@ class Motion:
 
   def run(self, motion):
     print(motion)
-    print("hello world!!")
+    print("motion start!!")
     time.sleep(3)
-    print("helloworld end!!")
+    print("motion end!!")
   

@@ -37,7 +37,7 @@ class ModeMiddleware(AbstractMiddleware):
             return (Command.MODE_CHANGE, Mode.DEFAULT)
         elif '다이어리' in input_text:
             return (Command.MODE_CHANGE, Mode.DIARY)
-        elif '단어 모드' in input_text:
+        elif '단어 동작 모드' in input_text:
             return (Command.MODE_CHANGE, Mode.CODING)
         else:
             return (Command.COMMUNITY, self.modeManager.get_mode_id())

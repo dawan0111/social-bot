@@ -22,8 +22,11 @@ ax.set_xlim(0, CHUNK)
 # 스트림 콜백 함수
 def callback(in_data, frame_count, time_info, status):
     data = np.frombuffer(in_data, dtype=np.int16)
-    line.set_ydata(data)
-    return (in_data, pyaudio.paContinue)
+    ndarray = np.fromstring(in_data, dtype=np.int16)
+    scaled = (ndarray * 0.008).astype(np.int16)
+
+    line.set_ydata(scaled)
+    return (scaled.tostring(), pyaudio.paContinue)
 
 # 스트림 객체 생성
 stream = audio.open(format=FORMAT, channels=CHANNELS,

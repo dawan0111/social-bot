@@ -114,7 +114,7 @@ class OutputProcesser:
                     self.output_start_callback()
 
                 is_direct, chats, direct_message, motion = self.input_queue.get()
-                print(motion)
+
                 motion_thread = threading.Thread(target=self.motionModule.run, args=(motion, ))
                 motion_thread.start()
                 
@@ -180,7 +180,7 @@ if __name__ == "__main__":
 
     output_processer = OutputProcesser(tts=tts, openAI=openAI, modeManager=modeManager, APIModule=API_module, motionModule=motion_module)
 
-    stt = STT(GCP_AUTH_PATH, GCP_LANG_CODE, _cfg["STT"]["rate"], _cfg["STT"]["chunk"], output_processer.speak_callback, ['단어 모드', '번 세팅'])
+    stt = STT(GCP_AUTH_PATH, GCP_LANG_CODE, _cfg["STT"]["rate"], _cfg["STT"]["chunk"], output_processer.speak_callback, ['단어 동작 모드', '번 세팅'])
     
     input_processer = InputProcesser(stt=stt)
 
