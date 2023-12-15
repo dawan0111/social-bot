@@ -4,10 +4,10 @@ import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 
 # PyAudio 설정
-FORMAT = pyaudio.paInt16
+FORMAT = pyaudio.paInt32
 CHANNELS = 1
-RATE = 44100
-CHUNK = 1024
+RATE = 16000
+CHUNK = 4096
 
 # PyAudio 객체 초기화
 audio = pyaudio.PyAudio()
@@ -21,9 +21,9 @@ ax.set_xlim(0, CHUNK)
 
 # 스트림 콜백 함수
 def callback(in_data, frame_count, time_info, status):
-    data = np.frombuffer(in_data, dtype=np.int16)
-    ndarray = np.fromstring(in_data, dtype=np.int16)
-    scaled = (ndarray * 0.008).astype(np.int16)
+    data = np.frombuffer(in_data, dtype=np.int32)
+    ndarray = np.fromstring(in_data, dtype=np.int32)
+    scaled = (ndarray).astype(np.int32)
 
     line.set_ydata(scaled)
     return (scaled.tostring(), pyaudio.paContinue)
@@ -32,6 +32,7 @@ def callback(in_data, frame_count, time_info, status):
 stream = audio.open(format=FORMAT, channels=CHANNELS,
                     rate=RATE, input=True,
                     frames_per_buffer=CHUNK,
+                    input_device_index=1,
                     stream_callback=callback)
 
 # 애니메이션 업데이트 함수

@@ -8,8 +8,14 @@ from google.cloud import speech
 import pyaudio
 
 p = pyaudio.PyAudio()
+device_number = 0
 for i in range(p.get_device_count()):
-	print(p.get_device_info_by_index(i))
+    device = p.get_device_info_by_index(i)
+    print(device)
+    if "snd_rpi_i2s_card" in device["name"]:
+        device_number = device["index"]
+        break
+
 print("len: ", p.get_device_count())
 class MicrophoneStream(object):
 
@@ -23,10 +29,11 @@ class MicrophoneStream(object):
     def __enter__(self):
         self._audio_interface = pyaudio.PyAudio()
         self._audio_stream = self._audio_interface.open(
-            format=pyaudio.paInt16,
+            format=pyaudio.paInt32,
             channels=1,
             rate=self._rate,
             input=True,
+            input_device_index=device_number,
             frames_per_buffer=self._chunk,
             stream_callback=self._fill_buffer,
         )
@@ -50,7 +57,18 @@ class MicrophoneStream(object):
         if self.paused:
             self._buff.put(b'\x00' * 3200)
         else:
-            self._buff.put(in_data)
+            data_int32 = np.frombuffer(in_data, dtype=np.int32)
+            data_int32 = ((data_int32 / (2 ** 31 - 1)) * 32767).astype(np.int16)
+            data_len = data_int32.size // 2
+            data_int16_1 = data_int32[:data_len]
+            data_int16_2 = data_int32[data_len:]
+
+            self._buff.put(data_int16_1.tobytes())
+            self._buff.put(data_int16_2.tobytes())
+
+            # data_int16 = data_int32.astype(np.int16)
+
+            # self._buff.put(in_data)
             # ndarray = np.fromstring(in_data, dtype=np.int16)
             # max_volume = np.max(ndarray)
             
