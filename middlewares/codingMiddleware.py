@@ -28,7 +28,12 @@ class CodingMiddleware(AbstractMiddleware):
                 return (False, input_text, True, [], "{} 문제로 변경했어요.".format(self.setting["id"]), [])
 
             coding_moton = self.create_motion(input_text)
-            return (False, input_text, True, [], "motion start", coding_moton)
+            text = "동작을 확인해보세요."
+
+            if len(coding_moton) == 0:
+                text = ""
+                
+            return (False, input_text, True, [], text, coding_moton)
         else:
           return response
         
