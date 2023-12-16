@@ -178,6 +178,10 @@ if __name__ == "__main__":
     codingMiddleware = CodingMiddleware(modeManager)
 
     output_processer = OutputProcesser(tts=tts, openAI=openAI, modeManager=modeManager, APIModule=API_module, motionModule=motion_module)
+<<<<<<< HEAD
+=======
+    
+>>>>>>> 723590283982097bfd04f972c55cd352ca6fad87
     stt = STT(GCP_AUTH_PATH, GCP_LANG_CODE, _cfg["STT"]["rate"], _cfg["STT"]["chunk"], output_processer.speak_callback, ['단어 동작 모드', '번 세팅', "사과", "딸기", "포도", "자두", "레몬", "수박", "토끼", "상어", "사자", "여우", "하마", "고래", "김밥", "만두", "피자", "치킨", "초밥", "라면"])
     
     input_processer = InputProcesser(stt=stt)
