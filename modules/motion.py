@@ -1,4 +1,4 @@
-import serial
+# import serial
 import time
 
 def xor_and_add(data):
