@@ -132,6 +132,8 @@ class STT:
                 print("time out: {}".format(self.detecting_text))
                 self.spacking_mutex.acquire()
                 self.listen_callback([(self.detecting_text, time.time())])
+                if self.text_start_index > 0:
+                    self.text_start_index += 1
                 self.text_start_index += len(self.detecting_text)
                 self.detecting_text = ""
                 self.timeout = True
@@ -183,11 +185,12 @@ class STT:
                 self.detecting_text = transcript + overwrite_chars
                 self.spacking_mutex.release()
             else:
-                response = []
+                response = []                
+                print(result.alternatives[0].transcript, self.text_start_index)
+
                 while not self.text_buffer.empty():
                     response.append(self.text_buffer.get())
 
-                print(transcript + overwrite_chars)
                 response.append((transcript + overwrite_chars, time.time()))
 
                 self.spacking_mutex.acquire()
