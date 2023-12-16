@@ -22,7 +22,7 @@ if IS_RASPBERRY_OS:
 
 def parse_args():
     parser = argparse.ArgumentParser(description="EMOTIBOT Parameter description")
-    parser.add_argument("--config", type=str, default=os.environ.get("GCP_KEY_PATH", "./config.yaml"), help="emoti config yaml file path")
+    parser.add_argument("--config", type=str, default=os.environ.get("GCP_KEY_PATH", "/home/airo/social-bot/config.yaml"), help="emoti config yaml file path")
 
     args = parser.parse_args()
     return args
@@ -116,7 +116,6 @@ class OutputProcesser:
                 is_direct, chats, direct_message, motion = self.input_queue.get()
 
                 motion_thread = threading.Thread(target=self.motionModule.run, args=(motion, ))
-                motion_thread.start()
                 
                 if is_direct:
                     if direct_message:
@@ -129,7 +128,7 @@ class OutputProcesser:
                     self.modeManager.add_chat(response_text, 'assistant')
                     self.tts.run(response_text)
                     self.latest_answer = time.time()
-
+                motion_thread.start()
                 motion_thread.join()
 
                 if self.output_end_callback is not None:
@@ -179,7 +178,6 @@ if __name__ == "__main__":
     codingMiddleware = CodingMiddleware(modeManager)
 
     output_processer = OutputProcesser(tts=tts, openAI=openAI, modeManager=modeManager, APIModule=API_module, motionModule=motion_module)
-    
     stt = STT(GCP_AUTH_PATH, GCP_LANG_CODE, _cfg["STT"]["rate"], _cfg["STT"]["chunk"], output_processer.speak_callback, ['단어 동작 모드', '번 세팅', "사과", "딸기", "포도", "자두", "레몬", "수박", "토끼", "상어", "사자", "여우", "하마", "고래", "김밥", "만두", "피자", "치킨", "초밥", "라면"])
     
     input_processer = InputProcesser(stt=stt)
