@@ -106,7 +106,8 @@ class STT:
         self.config = speech.RecognitionConfig(encoding=speech.RecognitionConfig.AudioEncoding.LINEAR16,
                                           sample_rate_hertz=rate,
                                           language_code=language_code,
-                                          alternative_language_codes=["en-US"],
+                                          max_alternatives=0,
+                                          # alternative_language_codes=["en-US"],
                                           speech_contexts=[{"phrases":phrases}]
         )
 
@@ -128,7 +129,7 @@ class STT:
     def speaking_timeout(self):
         while True:
             diff_time = time.time() - self.latest_time
-            if diff_time >= 5 and self.detecting_text.strip() != "":
+            if diff_time >= 2 and self.detecting_text.strip() != "":
                 print("time out: {}".format(self.detecting_text))
                 self.spacking_mutex.acquire()
                 self.listen_callback([(self.detecting_text, time.time())])
@@ -163,7 +164,7 @@ class STT:
 
     def listen_audio(self, responses):
         num_chars_printed = 0
-        
+        print("listen_audio")
         for response in responses:
             self.latest_time = time.time()
             if not response.results:
@@ -198,7 +199,7 @@ class STT:
                 self.detecting_text = ""
                 self.spacking_mutex.release()
 
-                if response[-1][0].strip() != "":
+                if response[-1][0].strip() != "" and not self.stream.paused:
                     self.listen_callback(response)
                     print("finish]", transcript + overwrite_chars)
                 

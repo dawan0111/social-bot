@@ -131,6 +131,9 @@ class OutputProcesser:
                 motion_thread.start()
                 motion_thread.join()
 
+                if len(motion) > 0:
+                    self.tts.run("끝")
+
                 if self.output_end_callback is not None:
                     self.output_end_callback()
             else:
@@ -173,15 +176,10 @@ if __name__ == "__main__":
     openAI = OpenAI(OPENAI['API_KEY'], OPENAI['model'])
     motion_module = Motion()
     API_module = API(api_endpoint="http://127.0.0.1:8000")
-
     modeMiddleware = ModeMiddleware(modeManager)
     codingMiddleware = CodingMiddleware(modeManager)
 
     output_processer = OutputProcesser(tts=tts, openAI=openAI, modeManager=modeManager, APIModule=API_module, motionModule=motion_module)
-<<<<<<< HEAD
-=======
-    
->>>>>>> 723590283982097bfd04f972c55cd352ca6fad87
     stt = STT(GCP_AUTH_PATH, GCP_LANG_CODE, _cfg["STT"]["rate"], _cfg["STT"]["chunk"], output_processer.speak_callback, ['단어 동작 모드', '번 세팅', "사과", "딸기", "포도", "자두", "레몬", "수박", "토끼", "상어", "사자", "여우", "하마", "고래", "김밥", "만두", "피자", "치킨", "초밥", "라면"])
     
     input_processer = InputProcesser(stt=stt)
@@ -194,11 +192,8 @@ if __name__ == "__main__":
 
     input_thread = threading.Thread(target=input_processer.run)
     output_thread = threading.Thread(target=output_processer.run)
-
-    tts.run("program start")
-
     threads = [input_thread, output_thread]
-
+    tts.run("soler start")
     if IS_RASPBERRY_OS:
         neo = Neo()
         led_processer = LEDProcesser(neo)
