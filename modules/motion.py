@@ -35,31 +35,33 @@ class Motion:
           self.ser.write(send_data)
           time.sleep(0.05)
       goal_motion[7] = xor_and_add(goal_motion)
-      self.ser.write(goal_motion)  
+      self.ser.write(goal_motion)
 
   def run(self, motions):
       for motion in motions:
-          print("motion: {}".format(motion))
-          motion_data = bytearray([0xFF, 0xFF, 85, 90, 95, 0x00, 0x00, 0x00])
-          reset_data = bytearray([0xFF, 0xFF, 85, 90, 95, 0x00, 0x00, 0x00])
-          if motion == "L":
-              motion_data[2] += self.safety_thr
-          elif motion == "R":
-              motion_data[2] -= self.safety_thr
-          elif motion == "D":
-              motion_data[3] += self.safety_thr
-          elif motion == "U":
-              motion_data[3] -= self.safety_thr
-          elif motion == "L_E":
-              motion_data[5] = 0x01
-          elif motion == "R_E":
-              motion_data[6] = 0x01
+        print("motion: {}".format(motion))
+        motion_data = bytearray([0xFF, 0xFF, 85, 90, 95, 0x00, 0x00, 0x00])
+        reset_data = bytearray([0xFF, 0xFF, 85, 90, 95, 0x00, 0x00, 0x00])
+        if motion == "L":
+            motion_data[2] += self.safety_thr
+        elif motion == "R":
+            motion_data[2] -= self.safety_thr
+        elif motion == "D":
+            motion_data[3] += self.safety_thr
+        elif motion == "U":
+            motion_data[3] -= self.safety_thr
+        elif motion == "L_E":
+            motion_data[5] = 0x01
+        elif motion == "R_E":
+            motion_data[6] = 0x01
           
-          print("motion_data start!!")
-          self.send_smooth_motion(reset_data, motion_data)
-          time.sleep(1)
-          self.send_smooth_motion(motion_data, reset_data)
-          time.sleep(1)
+        print("motion_data start!!")
+        motion_data[7] = xor_and_add(motion_data)
+        self.ser.write(motion_data)
+        time.sleep(1)
+        reset_data[7] = xor_and_add(reset_data)
+        self.ser.write(reset_data)
+        time.sleep(1)
 
 if __name__ == "__main__":
     motion = Motion()
