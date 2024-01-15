@@ -132,7 +132,7 @@ class OutputProcesser:
                 motion_thread.join()
 
                 if len(motion) > 0:
-                    self.tts.run("끝")
+                    self.tts.run("끝났습니다.")
 
                 if self.output_end_callback is not None:
                     self.output_end_callback()

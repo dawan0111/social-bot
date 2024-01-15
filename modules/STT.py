@@ -129,7 +129,7 @@ class STT:
     def speaking_timeout(self):
         while True:
             diff_time = time.time() - self.latest_time
-            if diff_time >= 2 and self.detecting_text.strip() != "":
+            if diff_time >= 5 and self.detecting_text.strip() != "":
                 print("time out: {}".format(self.detecting_text))
                 self.spacking_mutex.acquire()
                 self.listen_callback([(self.detecting_text, time.time())])
@@ -200,7 +200,7 @@ class STT:
                 self.spacking_mutex.release()
 
                 if response[-1][0].strip() != "" and not self.stream.paused:
-                    self.listen_callback(response)
+                    # self.listen_callback(response)
                     print("finish]", transcript + overwrite_chars)
                 
                 num_chars_printed = 0

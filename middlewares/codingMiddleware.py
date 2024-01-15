@@ -10,7 +10,7 @@ class CodingMiddleware(AbstractMiddleware):
         self.modeManager = modeManager
         self.settings = [
             dict(id="과일", left_command=["딸기"], right_command=["사과"], up_command=["포도"], down_command=["자두"], right_eye_command=["수박"], left_eye_command=["레몬", "멜론"]),
-            dict(id="동물", left_command=["여우"], right_command=["사자", "타자"], up_command=["토끼"], down_command=["상어"], right_eye_command=["하마"], left_eye_command=["고래", "노래", "오래"]),
+            dict(id="동물", left_command=["여우"], right_command=["사자", "타자"], up_command=["토끼"], down_command=["상어"], right_eye_command=["하마", "삼아"], left_eye_command=["고래", "노래", "오래"]),
             dict(id="음식", left_command=["김밥"], right_command=["만두"], up_command=["피자"], down_command=["치킨"], right_eye_command=["초밥"], left_eye_command=["라면"]),
         ]
         self.setting = self.settings[0]
